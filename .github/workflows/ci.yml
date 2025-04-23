@@ -27,8 +27,13 @@ jobs:
       - name: Install Trivy
         run: docker run aquasec/trivy
 
-      - name: Scan Docker image with Trivy
-        run: trivy image --format table --output trivy-report.txt devsecure-api:latest
+      - name: Scan Docker image with Trivy (via Docker)
+        run: |
+          docker run --rm \
+            -v /var/run/docker.sock:/var/run/docker.sock \
+            -v ${{ github.workspace }}:/project \
+            aquasec/trivy image devsecure-api:latest
+      
 
       - name: Install GitLeaks
         run: |

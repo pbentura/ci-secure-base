@@ -36,14 +36,7 @@ jobs:
           docker run --rm \
             -v /var/run/docker.sock:/var/run/docker.sock \
             -v ${{ github.workspace }}:/project \
-            aquasec/trivy image --format template --template "@trivy-template.html" --output /project/trivy-report.html devsecure-api:latest
-      
-
-      - name: Upload Trivy HTML report
-        uses: actions/upload-artifact@v4
-        with:
-          name: trivy-report
-          path: trivy-report.html
+            aquasec/trivy image --format template --template --output /project/trivy-report.html devsecure-api:latest
 
       - name: Install GitLeaks
         run: |
@@ -82,6 +75,12 @@ jobs:
 
       - name: Snyk container scan
         run: snyk container test devsecure-api:latest --severity-threshold=medium
+
+      - name: Install snyk-to-html
+        run: npm install -g snyk-to-html
+
+      - name: Generate HTML report
+        run: snyk-to-html -i snyk-report.json -o snyk-report.html
 
       - name: Push Docker image
         run: |

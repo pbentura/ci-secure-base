@@ -24,8 +24,8 @@ jobs:
       - name: Build Docker image
         run: docker build -t devsecure-api:latest .
 
-      - name: Install Trivy
-        run: docker run aquasec/trivy
+#      - name: Install Trivy
+#        run: docker run aquasec/trivy
 
       - name: Scan Docker image with Trivy (via Docker)
         run: |

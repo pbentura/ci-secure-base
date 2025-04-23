@@ -36,7 +36,7 @@ jobs:
           docker run --rm \
             -v /var/run/docker.sock:/var/run/docker.sock \
             -v ${{ github.workspace }}:/project \
-            aquasec/trivy image --format template --output /project/trivy-report.html devsecure-api:latest
+            aquasec/trivy image --format template --template "@trivy-template.html" --output /project/trivy-report.html devsecure-api:latest
       
 
       - name: Upload Trivy HTML report

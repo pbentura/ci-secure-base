@@ -24,16 +24,26 @@ jobs:
       - name: Build Docker image
         run: docker build -t devsecure-api:latest .
 
-#      - name: Install Trivy
-#        run: docker run aquasec/trivy
-
-      - name: Scan Docker image with Trivy (via Docker)
+      - name: Trivy scan - CLI output
         run: |
           docker run --rm \
             -v /var/run/docker.sock:/var/run/docker.sock \
             -v ${{ github.workspace }}:/project \
             aquasec/trivy image devsecure-api:latest
-      
+
+      - name: Trivy scan - Generate HTML report
+        run: |
+          docker run --rm \
+            -v /var/run/docker.sock:/var/run/docker.sock \
+            -v ${{ github.workspace }}:/project \
+            aquasec/trivy image --format template --template "@/contrib/html.tpl" \
+            -o /project/trivy-report.html devsecure-api:latest
+
+      - name: Upload Trivy HTML report
+        uses: actions/upload-artifact@v4
+        with:
+          name: trivy-report
+          path: trivy-report.html
 
       - name: Install GitLeaks
         run: |
@@ -45,8 +55,14 @@ jobs:
           tar -xvzf gitleaks*.tar.gz
           sudo mv gitleaks /usr/local/bin/
 
-      - name: Run GitLeaks scan
-        run: gitleaks detect --source . --report-format sarif --report-path gitleaks.sarif
+      - name: Run GitLeaks scan (JSON)
+        run: gitleaks detect --source . --report-format json --report-path gitleaks-report.json
+
+      - name: Upload GitLeaks report
+        uses: actions/upload-artifact@v4
+        with:
+          name: gitleaks-report
+          path: gitleaks-report.json
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -68,4 +84,6 @@ jobs:
         run: snyk container test devsecure-api:latest --severity-threshold=medium
 
       - name: Push Docker image
-        run: docker tag devsecure-api:latest ${{ secrets.DOCKER_USERNAME }}/devsecure-api:latest && docker push ${{ secrets.DOCKER_USERNAME }}/devsecure-api:latest
+        run: |
+          docker tag devsecure-api:latest ${{ secrets.DOCKER_USERNAME }}/devsecure-api:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/devsecure-api:latest

@@ -31,12 +31,12 @@ jobs:
             -v ${{ github.workspace }}:/project \
             aquasec/trivy image devsecure-api:latest
 
-      - name: Scan Docker image with Trivy and generate HTML report
+      - name: Scan Docker image with Trivy (via Docker)
         run: |
           docker run --rm \
             -v /var/run/docker.sock:/var/run/docker.sock \
             -v ${{ github.workspace }}:/project \
-            aquasec/trivy image --format template --template --output /project/trivy-report.html devsecure-api:latest
+            aquasec/trivy image devsecure-api:latest
 
       - name: Install GitLeaks
         run: |

@@ -18,6 +18,7 @@ app = Flask(__name__)
 @app.route('/')
 def hello():
     return "Hello from Flask!"
+gemini_key = 'AIzaSyAxeqH_erY3NRawUvzTde7eejTlVlo027c'
 
 @app.route('/ping')
 def ping():

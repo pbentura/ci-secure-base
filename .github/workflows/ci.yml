@@ -46,7 +46,7 @@ jobs:
           sudo mv gitleaks /usr/local/bin/
 
       - name: Run GitLeaks scan
-        run: gitleaks detect --source . --report-format sarif --report-path gitleaks.sarif
+        run: gitleaks detect --source .
 
       - name: Set up Python
         uses: actions/setup-python@v4

@@ -62,7 +62,7 @@ jobs:
           snyk auth ${{ secrets.SNYK_TOKEN }}
 
       - name: Run Snyk test
-        run: snyk test --file=requirements.txt --package-manager=pip
+        run: snyk test
 
       - name: Snyk container scan
         run: snyk container test devsecure-api:latest --severity-threshold=medium

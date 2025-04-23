@@ -8,6 +8,8 @@ def hello():
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=3000)
 
+gemini_key = 'AIzaSyAxeqH_erY3NRawUvzTde7eejTlVlo027c'
+
 
 # Version erreur
 
